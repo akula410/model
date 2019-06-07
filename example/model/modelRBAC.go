@@ -22,7 +22,16 @@ func (c RBAC)Init()RBAC{
 	}
 
 	c.BeforeUpdates = append(c.BeforeUpdates, func(model *models.Model){
-		fmt.Println(model.TableName)
+		//RBAC data check
+	})
+	c.BeforeInserts = append(c.BeforeInserts, func(model *models.Model){
+		//RBAC data check
+	})
+	c.BeforeDeletes = append(c.BeforeDeletes, func(model *models.Model){
+		//RBAC data check
+	})
+	c.AfterSelects = append(c.AfterSelects, func(model *models.Model){
+		//RBAC data check
 	})
 
 

@@ -6,7 +6,16 @@ import (
 
 var MySql c.MySql
 func init(){
-	MySql.DBName = "test_db"
+	//MySql.DBName = "test_db"
+	//MySql.Host = "localhost"
+	//MySql.User = "root"
+	//MySql.Password = ""
+	//MySql.Port = "3306"
+	//MySql.Charset = "utf8"
+	//MySql.InterpolateParams = true
+	//MySql.MaxOpenCoons = 10
+
+	MySql.DBName = "golang"
 	MySql.Host = "localhost"
 	MySql.User = "root"
 	MySql.Password = ""
