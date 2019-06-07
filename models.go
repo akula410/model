@@ -15,11 +15,19 @@ type Model struct {
 	AfterUpdate func()
 	BeforeInsert func()
 	AfterInsert func()
+	BeforeSelect func()
+	AfterSelect func()
+	BeforeDelete func()
+	AfterDelete func()
 
 	BeforeUpdates []func(model *Model)
 	AfterUpdates []func(model *Model)
 	BeforeInserts []func(model *Model)
 	AfterInserts []func(model *Model)
+	BeforeSelects []func(model *Model)
+	AfterSelects []func(model *Model)
+	BeforeDeletes []func(model *Model)
+	AfterDeletes []func(model *Model)
 
 	Conn func()*sql.DB
 	ConnClose func()
@@ -33,14 +41,18 @@ func (c *Model) Find(id interface{}) bool{
 
 	selectWhere, params := c.fieldToSelect(id)
 	textSql := fmt.Sprintf("SELECT * FROM %s WHERE %s", c.TableName, selectWhere)
+	c.beforeSelects()
 	c.sql(textSql, params)
+	c.afterSelects()
 	return c.ok
 }
 
 func (c *Model) FindByCondition(condition map[string]interface{}) bool{
 	selectWhere, params := c.fieldsToSelect(condition)
 	textSql := fmt.Sprintf("SELECT * FROM %s WHERE %s", c.TableName, selectWhere)
+	c.beforeSelects()
 	c.sql(textSql, params)
+	c.afterSelects()
 	return c.ok
 }
 
@@ -133,6 +145,12 @@ func (c *Model) Insert() int64{
 	c.callSqlClose()
 
 	return aff
+}
+
+func (c *Model) Delete(){
+	c.beforeDeletes()
+	//Удаление
+	c.afterDeletes()
 }
 
 func (c *Model) Field(field string)interface{}{
@@ -297,9 +315,29 @@ func (c *Model) sql(textSql string, params []interface{}){
 func (c *Model) beforeUpdates(){
 	c.callSliceFunc(c.BeforeUpdates)
 	c.callFunc(c.BeforeUpdate)
+}
+
+func (c *Model) beforeInserts(){
+	c.callSliceFunc(c.BeforeInserts)
+	c.callFunc(c.BeforeInsert)
+}
+
+func (c *Model) afterSelects(){
+	c.callSliceFunc(c.AfterUpdates)
+	c.callFunc(c.AfterUpdate)
+}
+
+func (c *Model) afterDeletes(){
+	c.callSliceFunc(c.AfterInserts)
+	c.callFunc(c.AfterInsert)
+}
+
+func (c *Model) beforeSelects(){
+	c.callSliceFunc(c.BeforeUpdates)
+	c.callFunc(c.BeforeUpdate)
 
 }
-func (c *Model) beforeInserts(){
+func (c *Model) beforeDeletes(){
 	c.callSliceFunc(c.BeforeInserts)
 	c.callFunc(c.BeforeInsert)
 }
