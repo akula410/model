@@ -147,10 +147,31 @@ func (c *Model) Insert() int64{
 	return aff
 }
 
-func (c *Model) Delete(){
+func (c *Model) Delete()int64{
+	var result int64
 	c.beforeDeletes()
-	//Удаление
+	if id := c.GetId();id != nil {
+		textSql := fmt.Sprintf("DELETE FROM %s WHERE %s=?", c.TableName, c.PrimaryKey)
+
+		ins, err := c.Conn().Prepare(textSql)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		res, err := ins.Exec(id)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		aff, err := res.RowsAffected()
+		if err != nil {
+			panic(err.Error())
+		}
+		result = aff
+	}
 	c.afterDeletes()
+
+	return result
 }
 
 func (c *Model) Field(field string)interface{}{
