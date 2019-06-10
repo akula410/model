@@ -1,10 +1,5 @@
 package model
 
-import (
-	"fmt"
-	"strconv"
-)
-
 type tmp struct {
 	Data Regular
 }
@@ -19,19 +14,7 @@ func ExampleRegular() *tmp{
 }
 
 func (c *tmp) TrfField() int64{
-	var result int64
-
-	fields := c.Data.GetFields()
-	field, ok := fields["field1"]
-	if ok == false {
-		result = 0
-	}else {
-		i, err := strconv.ParseInt(fmt.Sprintf("%v", field), 10, 64)
-		if err != nil {
-			panic(err)
-		}
-		result = i*10
-	}
-
+	result := c.Data.TrfToInt("field1")
+	result *= 10
 	return result
 }
