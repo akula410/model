@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -205,6 +206,30 @@ func (c *Model) FlushData()*Model{
 	c.ok = false
 	c.id = nil
 	return c
+}
+
+func (c *Model) TrfToInt(field string) int64{
+	var result int64
+	var err error
+	f, ok := c.fields[field]
+	if ok == true {
+		result, err = strconv.ParseInt(fmt.Sprintf("%v", f), 10, 64)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return result
+}
+
+func (c *Model) TrfToString(field string) string{
+	var result string
+	f, ok := c.fields[field]
+	if ok == true {
+		result = fmt.Sprintf("%v", f)
+	}
+
+	return result
 }
 
 func (c *Model) fieldToSelect(id interface{}) (string, []interface{}){
