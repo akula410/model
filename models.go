@@ -193,6 +193,22 @@ func (c *Model) SetField(field string, value interface{}) *Model{
 	return c
 }
 
+func (c *Model) SetFields(fields map[string]interface{}) *Model{
+
+	if len(c.fields)==0 {
+		c.fields = make(map[string]interface{})
+	}
+
+	if fields != nil{
+		for field, value := range fields {
+			c.fields[field] = value
+		}
+	}
+
+
+	return c
+}
+
 func (c *Model) GetId() interface{}{
 	if c.ok == false {
 		return nil
