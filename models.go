@@ -7,19 +7,22 @@ import (
 	"strings"
 )
 
+type Interface interface {
+	SetFields(fields map[string]interface{}) *Model
+}
 
 type Model struct {
 	TableName string
 	PrimaryKey string
 
-	BeforeUpdate func()
-	AfterUpdate func()
-	BeforeInsert func()
-	AfterInsert func()
-	BeforeSelect func()
-	AfterSelect func()
-	BeforeDelete func()
-	AfterDelete func()
+	BeforeUpdate func(model *Model)
+	AfterUpdate func(model *Model)
+	BeforeInsert func(model *Model)
+	AfterInsert func(model *Model)
+	BeforeSelect func(model *Model)
+	AfterSelect func(model *Model)
+	BeforeDelete func(model *Model)
+	AfterDelete func(model *Model)
 
 	BeforeUpdates []func(model *Model)
 	AfterUpdates []func(model *Model)
@@ -422,9 +425,9 @@ func (c *Model) callSliceFunc(fn []func(model *Model)){
 	}
 }
 
-func (c *Model) callFunc(fn func()){
+func (c *Model) callFunc(fn func(model *Model)){
 	if fn != nil {
-		fn()
+		fn(c)
 	}
 }
 
