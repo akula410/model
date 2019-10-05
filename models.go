@@ -385,23 +385,23 @@ func (c *Model) beforeInserts(){
 }
 
 func (c *Model) afterSelects(){
-	c.callSliceFunc(c.AfterUpdates)
-	c.callFunc(c.AfterUpdate)
+	c.callSliceFunc(c.AfterSelects)
+	c.callFunc(c.AfterSelect)
 }
 
 func (c *Model) afterDeletes(){
-	c.callSliceFunc(c.AfterInserts)
-	c.callFunc(c.AfterInsert)
+	c.callSliceFunc(c.AfterDeletes)
+	c.callFunc(c.AfterDelete)
 }
 
 func (c *Model) beforeSelects(){
-	c.callSliceFunc(c.BeforeUpdates)
-	c.callFunc(c.BeforeUpdate)
+	c.callSliceFunc(c.BeforeSelects)
+	c.callFunc(c.BeforeSelect)
 
 }
 func (c *Model) beforeDeletes(){
-	c.callSliceFunc(c.BeforeInserts)
-	c.callFunc(c.BeforeInsert)
+	c.callSliceFunc(c.BeforeDeletes)
+	c.callFunc(c.BeforeDelete)
 }
 
 func (c *Model) afterUpdates(){
