@@ -39,6 +39,8 @@ type Model struct {
 	fields map[string]interface{}
 	ok bool
 	id interface{}
+
+	console bool
 }
 
 func (c *Model) Find(id interface{}) bool{
@@ -69,7 +71,10 @@ func (c *Model) Update() int64{
 
 		fieldSlice, updSet := c.fieldsToUpdate()
 		textSql := fmt.Sprintf("UPDATE %s SET %s WHERE %s=?", c.TableName, updSet, c.PrimaryKey)
-
+		if c.console {
+			fmt.Println(textSql)
+			fmt.Println(fieldSlice)
+		}
 		ins, err := c.Conn().Prepare(textSql)
 		if err != nil {
 			panic(err.Error())
@@ -115,7 +120,10 @@ func (c *Model) Insert() int64{
 	c.ok = false
 	fieldSlice, strInsert, strValue := c.fieldsToInsert()
 	textSql := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", c.TableName, strInsert, strValue)
-
+	if c.console {
+		fmt.Println(textSql)
+		fmt.Println(fieldSlice)
+	}
 	ins, err := c.Conn().Prepare(textSql)
 	if err != nil {
 		panic(err.Error())
@@ -156,7 +164,9 @@ func (c *Model) Delete()int64{
 	c.beforeDeletes()
 	if id := c.GetId();id != nil {
 		textSql := fmt.Sprintf("DELETE FROM %s WHERE %s=?", c.TableName, c.PrimaryKey)
-
+		if c.console {
+			fmt.Println(textSql)
+		}
 		ins, err := c.Conn().Prepare(textSql)
 		if err != nil {
 			panic(err.Error())
@@ -251,6 +261,10 @@ func (c *Model) TrfToString(field string) string{
 	return result
 }
 
+func (c *Model) Console(){
+	c.console = true
+}
+
 func (c *Model) fieldToSelect(id interface{}) (string, []interface{}){
 	selectWhere := fmt.Sprintf("%s=?", c.PrimaryKey)
 	params := make([]interface{}, 0, 1)
@@ -314,6 +328,11 @@ func (c *Model) fieldsToInsert() ([]interface{}, string, string) {
 
 func (c *Model) sql(textSql string, params []interface{}){
 	c.ok = false
+
+	if c.console {
+		fmt.Println(textSql)
+		fmt.Println(params)
+	}
 	rows, err := c.Conn().Query(textSql, params...)
 
 	if err != nil {
