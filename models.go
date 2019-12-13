@@ -41,6 +41,8 @@ type Model struct {
 	id interface{}
 
 	console bool
+
+	customId interface{}
 }
 
 func (c *Model) Find(id interface{}) bool{
@@ -230,10 +232,15 @@ func (c *Model) GetId() interface{}{
 	}
 }
 
+func (c *Model) SetId(id interface{}) {
+	c.customId = id
+}
+
 func (c *Model) FlushData()*Model{
 	c.fields = nil
 	c.ok = false
 	c.id = nil
+	c.customId = nil
 	return c
 }
 
@@ -320,6 +327,12 @@ func (c *Model) fieldsToInsert() ([]interface{}, string, string) {
 			resultInsertArray = append(resultInsertArray, field)
 			resultValueArray = append(resultValueArray, "?")
 		}
+	}
+
+	if c.customId != nil {
+		transformFields = append(transformFields, c.customId)
+		resultInsertArray = append(resultInsertArray, c.PrimaryKey)
+		resultValueArray = append(resultValueArray, "?")
 	}
 
 	return transformFields, strings.Join(resultInsertArray, ", "), strings.Join(resultValueArray, ", ")
